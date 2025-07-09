@@ -1,0 +1,72 @@
+"use client";
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+
+interface UserAvatarProps {
+  name: string;
+  className?: string;
+  size?: "sm" | "md" | "lg";
+}
+
+// Generate a consistent color based on the user's name
+function getAvatarColor(name: string): string {
+  const colors = [
+    "bg-red-500",
+    "bg-orange-500",
+    "bg-amber-500",
+    "bg-yellow-500",
+    "bg-lime-500",
+    "bg-green-500",
+    "bg-emerald-500",
+    "bg-teal-500",
+    "bg-cyan-500",
+    "bg-sky-500",
+    "bg-blue-500",
+    "bg-indigo-500",
+    "bg-violet-500",
+    "bg-purple-500",
+    "bg-fuchsia-500",
+    "bg-pink-500",
+    "bg-rose-500",
+  ];
+
+  // Create a simple hash from the name
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  // Use the hash to pick a color
+  const colorIndex = Math.abs(hash) % colors.length;
+  return colors[colorIndex];
+}
+
+// Get initials from full name
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2); // Max 2 characters
+}
+
+export function UserAvatar({ name, className, size = "md" }: UserAvatarProps) {
+  const initials = getInitials(name);
+  const colorClass = getAvatarColor(name);
+
+  const sizeClasses = {
+    sm: "h-6 w-6 text-xs",
+    md: "h-8 w-8 text-sm",
+    lg: "h-12 w-12 text-lg",
+  };
+
+  return (
+    <Avatar className={cn(sizeClasses[size], className)}>
+      <AvatarFallback className={cn(colorClass, "text-white font-semibold")}>
+        {initials}
+      </AvatarFallback>
+    </Avatar>
+  );
+}
